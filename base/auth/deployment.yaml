@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  namespace: jobtracker-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      serviceAccountName: auth-sa
+      containers:
+      - name: auth
+        image: us-central1-docker.pkg.dev/norse-carport-484915-f2/jobtracker-docker/auth:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: GOOGLE_CLOUD_PROJECT
+          value: "norse-carport-484915-f2"
