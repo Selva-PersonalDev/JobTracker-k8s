@@ -4,3 +4,5 @@ resources:
   - namespaces/staging.yaml
   - namespaces/prod.yaml
   - auth
+  - frontend
+  - common/ingress.yaml
