@@ -1,8 +1,0 @@
-resources:
-  - namespaces/dev.yaml
-  - namespaces/qa.yaml
-  - namespaces/staging.yaml
-  - namespaces/prod.yaml
-  - auth
-  - frontend
-  - common/ingress.yaml
