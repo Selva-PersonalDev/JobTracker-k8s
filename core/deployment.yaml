@@ -13,6 +13,25 @@ spec:
       labels:
         app: jobtracker-core
     spec:
+
+      # -------------------------------
+      # INIT CONTAINER (CRITICAL FIX)
+      # -------------------------------
+      initContainers:
+        - name: init-db-dir
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /data && chmod 777 /data
+          volumeMounts:
+            - name: jobtracker-data
+              mountPath: /data
+
+      # -------------------------------
+      # MAIN APP CONTAINER
+      # -------------------------------
       containers:
         - name: jobtracker-core
           image: us-central1-docker.pkg.dev/norse-carport-484915-f2/jobtracker/jobtracker-core:latest
@@ -22,7 +41,6 @@ spec:
             - containerPort: 8080
 
           env:
-            # Session secret (stable across restarts)
             - name: SESSION_SECRET
               value: "jobtracker-session-secret"
 
@@ -35,10 +53,12 @@ spec:
               memory: "256Mi"
 
           volumeMounts:
-            # IMPORTANT: Mount PVC ONLY for data, NOT app code
             - name: jobtracker-data
               mountPath: /data
 
+      # -------------------------------
+      # PVC
+      # -------------------------------
       volumes:
         - name: jobtracker-data
           persistentVolumeClaim:
