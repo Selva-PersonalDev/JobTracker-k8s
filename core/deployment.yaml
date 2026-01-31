@@ -14,22 +14,32 @@ spec:
         app: jobtracker-core
     spec:
       containers:
-      - name: jobtracker-core
-        image: us-central1-docker.pkg.dev/norse-carport-484915-f2/jobtracker/jobtracker-core:latest
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "250m"
-            memory: "256Mi"
-        volumeMounts:
-        - name: jobtracker-data
-          mountPath: /app
+        - name: jobtracker-core
+          image: us-central1-docker.pkg.dev/norse-carport-484915-f2/jobtracker/jobtracker-core:latest
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8080
+
+          env:
+            # Session secret (stable across restarts)
+            - name: SESSION_SECRET
+              value: "jobtracker-session-secret"
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+          volumeMounts:
+            # IMPORTANT: Mount PVC ONLY for data, NOT app code
+            - name: jobtracker-data
+              mountPath: /data
+
       volumes:
-      - name: jobtracker-data
-        persistentVolumeClaim:
-          claimName: jobtracker-pvc
+        - name: jobtracker-data
+          persistentVolumeClaim:
+            claimName: jobtracker-pvc
