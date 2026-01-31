@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobtracker-core
+  namespace: jobtracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jobtracker-core
+  template:
+    metadata:
+      labels:
+        app: jobtracker-core
+    spec:
+      containers:
+      - name: core
+        image: us-central1-docker.pkg.dev/norse-carport-484915-f2/jobtracker/jobtracker-core:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
